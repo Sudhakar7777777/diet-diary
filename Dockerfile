@@ -1,5 +1,10 @@
 FROM adoptopenjdk/openjdk8:latest
 EXPOSE 8080
-RUN mkdir /opt/app
-COPY "target/diet-diary-0.0.1-SNAPSHOT.jar" "/opt/app/japp.jar"
-CMD ["java", "-jar", "/opt/app/japp.jar"]
+VOLUME /tmp
+
+ARG DEPENDENCY=target/dependency
+COPY ${DEPENDENCY}/BOOT-INF/lib /app/lib
+COPY ${DEPENDENCY}/META-INF /app/META-INF
+COPY ${DEPENDENCY}/BOOT-INF/classes /app
+
+ENTRYPOINT ["java","-cp","app:app/lib/*","com.sbk.dietdiary.DietDiaryApplication"]
